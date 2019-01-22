@@ -12,18 +12,17 @@ max = sides.max
 
 if sides.length == 1
 	puts 'Треугольник равнобедренный и равносторонний, но не прямоугольный';
-else 
-	if sides.length == 2 
+else
+	if sides.length == 2
 		puts 'Треугольник равнобедренный'
 		condition = sides[0] + sides[0] == max
-	else 
+	else
 		condition = sides[0] + sides[1] == max
 	end
 
 	if condition
 		puts 'Треугольник прямоугольный'
 	else
-		puts 'Треугольник не прямоугольный'	
+		puts 'Треугольник не прямоугольный'
 	end
-end	
-
+end
