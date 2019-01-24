@@ -5,9 +5,7 @@ vowels = ['A', 'E', 'I', 'O', 'U']
 res = {}
 
 alphabet.each_with_index do |v, i|
-  if vowels.include?(v)
-    res[v] = i + 1
-  end
+  res[v] = i + 1 if vowels.include?(v)
 end
 
 puts res

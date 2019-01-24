@@ -3,12 +3,9 @@
 fib = [0, 1]
 
 loop do
-
   res = fib[-2] + fib[-1]
 
-  if res >= 100
-    break
-  end
+  break if res >= 100
 
   fib << res
 end
