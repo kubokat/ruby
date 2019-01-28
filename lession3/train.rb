@@ -12,12 +12,12 @@ class Train
 
   def remove_wagon
     if self.wagon <= 0
-      puts "Couch = #{self.wagon}"
+      puts "wagons = #{self.wagon}"
     elsif self.speed > 0
       puts "Speed #{self.speed} the wagon cannot be removed"
     else
       self.wagon = self.wagon - 1 if self.wagon > 0
-      puts "One wagon remove current couch = #{self.wagon}"
+      puts "One wagon remove current wagons = #{self.wagon}"
     end
   end
 
@@ -26,7 +26,7 @@ class Train
       puts "Speed #{self.speed} the wagon cannot be add"
     else
       self.wagon = self.wagon + 1
-      puts "One wagon add current couch = #{self.wagon}"
+      puts "One wagon add current wagons = #{self.wagon}"
     end
   end
 
