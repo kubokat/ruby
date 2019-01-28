@@ -3,57 +3,66 @@ class Train
   attr_accessor :wagon, :speed
   attr_reader :number, :type
 
-  def initialize(number, type = 'Cargo', wagon = 1)
+  def initialize(number, type = :cargo, wagon = 1)
     @number = number
     @type = type
     @wagon = wagon
     @speed = 0
+    @current_station = 0
   end
 
   def remove_wagon
-    if self.wagon <= 0
-      puts "wagons = #{self.wagon}"
-    elsif self.speed > 0
-      puts "Speed #{self.speed} the wagon cannot be removed"
+    if wagon <= 0 || self.speed > 0
+      false
     else
-      self.wagon = self.wagon - 1 if self.wagon > 0
-      puts "One wagon remove current wagons = #{self.wagon}"
+      self.wagon = wagon - 1 if wagon > 0
+      wagon
     end
   end
 
   def add_wagon
     if self.speed > 0
-      puts "Speed #{self.speed} the wagon cannot be add"
+      false
     else
-      self.wagon = self.wagon + 1
-      puts "One wagon add current wagons = #{self.wagon}"
+      self.wagon += 1
     end
   end
 
   def set_station
-    if @route.stations[@current_station] != nil
-      @route.stations[@current_station].add_train(self)
-      puts @route.stations[@current_station].name
-    else
-      puts "Undefined station"
-    end
+    @route.stations[@current_station].add_train(self)
+    @route.stations[@current_station].name
   end
 
   def set_route(route)
     @route = route
-    @current_station = 0
     @route.stations[@current_station].add_train(self)
   end
 
   def next_station
-    @route.stations[@current_station].send_train(self)
-    @current_station += 1
-    set_station
+    unless @route.stations[@current_station + 1].nil?
+      @route.stations[@current_station].send_train(self)
+      @current_station += 1
+      set_station
+    end
   end
 
   def prev_station
-    @route.stations[@current_station].send_train(self)
-    @current_station -= 1
-    set_station
+    if @current_station > 0
+      @route.stations[@current_station].send_train(self)
+      @current_station -= 1
+      set_station
+    end
+  end
+
+  def route_next_station
+    @route.stations[@current_station + 1]
+  end
+
+  def route_current_station
+    @route.stations[@current_station]
+  end
+
+  def route_prev_station
+    @route.stations[@current_station - 1] if @current_station > 0
   end
 end

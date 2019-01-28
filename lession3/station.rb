@@ -1,6 +1,6 @@
 class Station
 
-  attr_reader :name
+  attr_reader :name, :trains
 
   def initialize(name)
     @name = name
@@ -11,14 +11,10 @@ class Station
     @trains << train
   end
 
-  def show_trains
-    @trains.each {|train| puts "Train  № #{train.number} type #{train.type}"}
-  end
-
   def show_trains_by_type(type)
     count = 0
     @trains.each {|train| count += 1 if train.type == type}
-    puts "Trains with type #{type} #{count} on station"
+    count
   end
 
   def send_train(train)
