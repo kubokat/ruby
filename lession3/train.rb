@@ -8,7 +8,7 @@ class Train
     @type = type
     @wagon = wagon
     @speed = 0
-    @current_station = 0
+    @station_index = 0
   end
 
   def remove_wagon
@@ -29,40 +29,40 @@ class Train
   end
 
   def set_station
-    @route.stations[@current_station].add_train(self)
-    @route.stations[@current_station].name
+    current_station.add_train(self)
+    current_station
   end
 
   def set_route(route)
     @route = route
-    @route.stations[@current_station].add_train(self)
+    current_station.add_train(self)
+  end
+
+  def move_forward
+    unless @route.stations[@station_index + 1].nil?
+      current_station.send_train(self)
+      @station_index += 1
+      set_station
+    end
+  end
+
+  def move_back
+    if @station_index > 0
+      current_station.send_train(self)
+      @station_index -= 1
+      set_station
+    end
   end
 
   def next_station
-    unless @route.stations[@current_station + 1].nil?
-      @route.stations[@current_station].send_train(self)
-      @current_station += 1
-      set_station
-    end
+    @route.stations[@station_index + 1]
+  end
+
+  def current_station
+    @route.stations[@station_index]
   end
 
   def prev_station
-    if @current_station > 0
-      @route.stations[@current_station].send_train(self)
-      @current_station -= 1
-      set_station
-    end
-  end
-
-  def route_next_station
-    @route.stations[@current_station + 1]
-  end
-
-  def route_current_station
-    @route.stations[@current_station]
-  end
-
-  def route_prev_station
-    @route.stations[@current_station - 1] if @current_station > 0
+    @route.stations[@station_index - 1] if @station_index > 0
   end
 end

@@ -12,9 +12,7 @@ class Station
   end
 
   def show_trains_by_type(type)
-    count = 0
-    @trains.each {|train| count += 1 if train.type == type}
-    count
+    @trains.select {|train| train.type == type}
   end
 
   def send_train(train)

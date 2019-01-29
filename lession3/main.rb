@@ -18,9 +18,11 @@ train1 = Train.new(1, 'Cargo', 2)
 
 train1.set_route(route)
 
-puts train1.next_station
+train1.move_forward
+train1.move_forward
 
-puts train1.route_prev_station.name
+puts train1.prev_station.name
+puts train1.current_station.name
 
-station2.trains.each {|train| puts "Train number: #{train.number} on #{station2.name} station"}
-
+station3.trains.each {|train| puts "Train number: #{train.number} on #{station2.name} station"}
+station3.show_trains_by_type('Cargo').each {|train| puts "Train number: #{train.number} train type #{train.type}"}
