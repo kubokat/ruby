@@ -89,8 +89,6 @@ class Menu
       train = PassengerTrain.new(number)
     when 2 then
       train = CargoTrain.new(number)
-    else
-      create_train
     end
 
     @trains << train
