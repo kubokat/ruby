@@ -18,17 +18,17 @@ class Route
     stations.delete(station)
   end
 
-  protected
-
-  def validate!
-    raise "Starting and ending stations are the same" if @stations.first == @stations.last
-  end
-
   def valid?
     validate!
     true
   rescue
     false
+  end
+
+  protected
+
+  def validate!
+    raise "Starting and ending stations are the same" if @stations.first == @stations.last
   end
 
 end

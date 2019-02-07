@@ -61,6 +61,13 @@ class Train
     end
   end
 
+  def valid?
+    validate!
+    true
+  rescue
+    false
+  end
+
   protected
 
   # Методы используются только внутри класса и его потомках
@@ -89,10 +96,4 @@ class Train
     raise "Train number has invalid format" if number !~ TRAIN_FORMAT
   end
 
-  def valid?
-    validate!
-    true
-  rescue
-    false
-  end
 end

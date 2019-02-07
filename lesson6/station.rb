@@ -32,19 +32,19 @@ class Station
     @trains.delete(train)
   end
 
+  def valid?
+    validate!
+    true
+  rescue
+    false
+  end
+
   private
 
   def validate!
     raise "Station name can't be nil" if name.nil?
     raise "Station name should be at 3-255 symbols" if name.length < 3 || name.length > 255
     raise "Station name has invalid format" if name !~ STATION_FORMAT
-  end
-
-  def valid?
-    validate!
-    true
-  rescue
-    false
   end
 
 end
