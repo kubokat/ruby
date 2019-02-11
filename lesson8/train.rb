@@ -2,7 +2,7 @@ class Train
   include Manufacturer
   include InstanceCounter
 
-  TRAIN_FORMAT = /^[a-z0-9]{3}(\-[a-z0-9]{2})?$/.freeze
+  TRAIN_FORMAT = /^[a-z0-9]{3}(\-[a-z0-9]{2})?$/
 
   attr_accessor :wagons, :speed
   attr_reader :number, :route
@@ -39,7 +39,7 @@ class Train
     end
   end
 
-  def set_route(route)
+  def route(route)
     @route = route
     current_station.add_train(self)
   end

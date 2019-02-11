@@ -1,4 +1,16 @@
 class Menu
+  ROUTE_NOT_FOUND = 'Нет маршрута'
+  CHANGE_STATION = 'Выберете станцию'
+
+  @@menu_items = ['Создать станцию', 'Создать поезд', 'Создать маршрут',
+                  'Добавить станцию к маршруту', 'Убрать станцию из маршрута',
+                  'Назначить маршрут поезду', 'Прицепить вагон к поезду',
+                  'Отцепить вагон от поезда', 'Заполнить вагон',
+                  'Передвинуть поезд вперёд по маршруту',
+                  'Передвинуть поезд назад по маршруту',
+                  'Посмотреть список станций',
+                  'Посмотреть список поездов на станции', 'Выход']
+
   def initialize
     @stations = []
     @trains = []
@@ -8,20 +20,7 @@ class Menu
 
   def run
     loop do
-      puts '1. Создать станцию'
-      puts '2. Создать поезд'
-      puts '3. Создать маршрут'
-      puts '4. Добавить станцию к маршруту'
-      puts '5. Убрать станцию из маршрута'
-      puts '6. Назначить маршрут поезду'
-      puts '7. Прицепить вагон к поезду'
-      puts '8. Отцепить вагон от поезда'
-      puts '9. Заполнить вагон'
-      puts '10. Передвинуть поезд вперёд по маршруту'
-      puts '11. Передвинуть поезд назад по маршруту'
-      puts '12. Посмотреть список станций'
-      puts '13. Посмотреть список поездов на станции'
-      puts '14. Выход'
+      @@menu_items.each_with_index { |item, index| puts "#{index + 1}. #{item}" }
 
       @choise = gets.to_i
 
@@ -32,9 +31,6 @@ class Menu
   end
 
   private
-
-  ROUTE_NOT_FOUND = 'Нет маршрута'.freeze
-  CHANGE_STATION = 'Выберете станцию'.freeze
 
   attr_accessor :choise
 
@@ -158,14 +154,18 @@ class Menu
 
   def delete_station_from_route
     return puts ROUTE_NOT_FOUND unless @route
-    return puts 'В маршруте не может быть менее двух станций' if @route.stations.size == 2
+
+    if @route.stations.size == 2
+      return puts 'В маршруте не может быть менее двух станций'
+    end
 
     @route.stations.each_with_index do |station, index|
-      puts "Cтанция #{index + 1} #{station.name}"
+      puts "Station #{index + 1} #{station.name}"
     end
 
     puts CHANGE_STATION
     choise = gets.to_i
+
     @route.delete_station(@stations[choise - 1]) if choise <= @route.stations.size
   end
 
@@ -173,13 +173,15 @@ class Menu
     return ROUTE_NOT_FOUND unless @route
 
     train = chose_train
-    train.set_route(@route)
+    train.route(@route)
   end
 
   def chose_train
     return 'Нет поездов' unless @trains.any?
 
-    @trains.each_with_index { |train, index| puts "#{index + 1}  #{train.number}" }
+    @trains.each_with_index do |train, index|
+      puts "#{index + 1}  #{train.number}"
+    end
 
     puts 'Выберите поезд:'
     choise = gets.to_i

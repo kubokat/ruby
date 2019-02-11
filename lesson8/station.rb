@@ -1,7 +1,7 @@
 class Station
   include InstanceCounter
 
-  STATION_FORMAT = /[a-z]/i.freeze
+  STATION_FORMAT = /[a-z]/i
 
   attr_reader :name, :trains
 
