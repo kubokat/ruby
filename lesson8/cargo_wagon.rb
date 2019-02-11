@@ -1,3 +1,4 @@
+# Cargo wagon class
 class CargoWagon < Wagon
   attr_accessor :volume
   attr_reader :used_volume

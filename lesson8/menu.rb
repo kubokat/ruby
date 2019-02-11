@@ -1,6 +1,7 @@
+# Menu class
 class Menu
-  ROUTE_NOT_FOUND = 'Нет маршрута'
-  CHANGE_STATION = 'Выберете станцию'
+  ROUTE_NOT_FOUND = 'Нет маршрута'.freeze
+  CHANGE_STATION = 'Выберете станцию'.freeze
 
   @@menu_items = ['Создать станцию', 'Создать поезд', 'Создать маршрут',
                   'Добавить станцию к маршруту', 'Убрать станцию из маршрута',
@@ -11,6 +12,10 @@ class Menu
                   'Посмотреть список станций',
                   'Посмотреть список поездов на станции', 'Выход']
 
+  @@methods = %w[create_station create_train create_route add_station_to_route
+                 delete_station_from_route set_route_to_train add_wagon remove_wagon
+                 fill_wagon move_forward move_back print_stations_list print_trains_on_station]
+
   def initialize
     @stations = []
     @trains = []
@@ -20,7 +25,9 @@ class Menu
 
   def run
     loop do
-      @@menu_items.each_with_index { |item, index| puts "#{index + 1}. #{item}" }
+      @@menu_items.each_with_index do |item, index|
+        puts "#{index + 1}. #{item}"
+      end
 
       @choise = gets.to_i
 
@@ -35,58 +42,20 @@ class Menu
   attr_accessor :choise
 
   def change_choice
-    case choise
-    when 1 then
-      create_station
-    when 2 then
-      create_train
-    when 3 then
-      create_route
-    when 4 then
-      add_station_to_route
-    when 5 then
-      delete_station_from_route
-    when 6 then
-      set_route_to_train
-    when 7 then
-      add_wagon
-    when 8 then
-      remove_wagon
-    when 9 then
-      fill_wagon
-    when 10 then
-      move_forward
-    when 11 then
-      move_back
-    when 12 then
-      print_stations_list
-    when 13 then
-      print_trains_on_station
-    else
-      puts 'action not found'
-    end
+    send(@@methods[choise - 1]) if @@methods[choise - 1]
   end
 
   def create_station
-    puts 'Введите название станции'
-    name = gets.chomp
+    name = question('Введите название станции:', 'str')
     station = Station.new(name)
     @stations << station
   end
 
   def create_train
-    puts 'Выберите тип поезда:'
-    puts '1. Пассажирский'
-    puts '2. Грузовой'
-    choise = gets.to_i
-    puts 'Номер поезда:'
-    number = gets.chomp
-    case choise
-    when 1 then
-      train = PassengerTrain.new(number)
-    when 2 then
-      train = CargoTrain.new(number)
-    end
+    choise = question(['Выберите тип поезда:', '1. Пассажирский', '2. Грузовой'])
+    number = question('Номер поезда:', 'str')
+
+    train = choise == 1 ? PassengerTrain.new(number) : CargoTrain.new(number)
 
     @trains << train
     puts "Train type #{train.class} with number #{train.number} created"
@@ -99,15 +68,11 @@ class Menu
     return 'Должно быть создано не менее двух станций' if @stations.size < 2
 
     print_stations_list
-
-    puts 'Выберите начальную станцию:'
-    first_station = gets.to_i
-    puts 'Выберите конечную станцию:'
-    last_station = gets.to_i
+    first_station = question('Выберите начальную станцию:')
+    last_station = question('Выберите конечную станцию:')
 
     if first_station != last_station
-      @route = Route.new(@stations[first_station - 1],
-                         @stations[last_station - 1])
+      @route = Route.new(@stations[first_station - 1], @stations[last_station - 1])
     else
       create_route
     end
@@ -125,46 +90,42 @@ class Menu
     @stations.each_with_index do |station, index|
       puts "Cтанция: #{index + 1}  #{station.name}"
       station.train_list do |train|
-        puts "  Train number: #{train.number},
-                train type: #{train.class},
-                numbers of wagons: #{train.wagons.length}
-        "
-        i = 1
-        train.wagons_list do |wagon|
-          wagon_list = "     Wagon number:#{i} , wagon type: #{wagon.class}"
-
-          wagon_list += if wagon.class == PassengerWagon
-                          ", free seats: #{wagon.free}, seats: #{wagon.number_of_seats}"
-                        else
-                          ", free value: #{wagon.free}, volume: #{wagon.volume}"
-                        end
-          i += 1
-          puts wagon_list
-        end
+        puts "Train number: #{train.number},
+              train type: #{train.class},
+              numbers of wagons: #{train.wagons.length}"
+        show_wagons_list(train)
       end
     end
   end
 
   def chose_station
     print_stations_list
-    puts CHANGE_STATION
-    choise = gets.to_i
+    choise = question(CHANGE_STATION)
     choise <= @stations.size ? choise : chose_station
+  end
+
+  def show_wagons_list(train)
+    i = 1
+    train.wagons_list do |wagon|
+      wagon_list = "Wagon number:#{i} , wagon type: #{wagon.class}"
+      wagon_list += if wagon.class == PassengerWagon
+                      ", free seats: #{wagon.free}, seats: #{wagon.number_of_seats}"
+                    else
+                      ", free value: #{wagon.free}, volume: #{wagon.volume}"
+                    end
+      i += 1
+      puts wagon_list
+    end
   end
 
   def delete_station_from_route
     return puts ROUTE_NOT_FOUND unless @route
 
-    if @route.stations.size == 2
-      return puts 'В маршруте не может быть менее двух станций'
-    end
+    return puts 'В маршруте не может быть менее двух станций' if @route.stations.size == 2
 
-    @route.stations.each_with_index do |station, index|
-      puts "Station #{index + 1} #{station.name}"
-    end
+    print_stations_list
 
-    puts CHANGE_STATION
-    choise = gets.to_i
+    choise = question(CHANGE_STATION)
 
     @route.delete_station(@stations[choise - 1]) if choise <= @route.stations.size
   end
@@ -173,7 +134,7 @@ class Menu
     return ROUTE_NOT_FOUND unless @route
 
     train = chose_train
-    train.route(@route)
+    train.add_route(@route)
   end
 
   def chose_train
@@ -183,8 +144,7 @@ class Menu
       puts "#{index + 1}  #{train.number}"
     end
 
-    puts 'Выберите поезд:'
-    choise = gets.to_i
+    choise = question('Выберите поезд:')
     choise <= @trains.size ? @trains[choise - 1] : chose_train
   end
 
@@ -206,28 +166,20 @@ class Menu
     train = chose_train
 
     if train.wagons.any?
-      puts 'Выберете вагон'
-      i = 1
-      train.wagons_list do |wagon|
-        if wagon.class == PassengerWagon
-          puts "#{i} seats: #{wagon.number_of_seats} seats free: #{wagon.free}"
-        else
-          puts "#{i} volume: #{wagon.volume} seats free: #{wagon.free}"
-        end
-        i += 1
-      end
 
-      choise = gets.to_i
+      show_wagons_list(train)
+
+      choise = question('Выберете вагон')
       wagon = train.wagons[choise - 1]
 
       if wagon.class == CargoWagon
-        puts 'Введите объем груза'
-        choise = gets.to_i
+        choise = question('Введите объем груза')
         wagon.take_volume(choise)
       else
         wagon.take_seat
       end
-
+    else
+      false
     end
   end
 
@@ -240,9 +192,17 @@ class Menu
     station = @stations[chose_station - 1]
     station.trains.each do |train|
       puts "Поезд: #{train.number} #{train.class}"
-      train.wagons_list do |wagon|
-        puts wagon.class
-      end
+      show_wagons_list(train)
+    end
+  end
+
+  def question(question, type = 'int')
+    puts question
+
+    if type == 'str'
+      gets.chomp
+    else
+      gets.to_i
     end
   end
 

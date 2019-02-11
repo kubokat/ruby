@@ -1,3 +1,4 @@
+# Passenger Wagon class
 class PassengerWagon < Wagon
   attr_accessor :used_seats
   attr_reader :number_of_seats

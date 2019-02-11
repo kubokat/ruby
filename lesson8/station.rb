@@ -1,7 +1,8 @@
+# Station class
 class Station
   include InstanceCounter
 
-  STATION_FORMAT = /[a-z]/i
+  STATION_FORMAT = /[a-z]/i.freeze
 
   attr_reader :name, :trains
 
@@ -46,7 +47,7 @@ class Station
 
   def validate!
     raise "Station name can't be nil" if name.nil?
-    raise 'Station name should be at 3-255 symbols' if name.length < 3 || name.length > 255
+    raise 'Name > 3 and < 255 symbols' if name.length < 3 || name.length > 255
     raise 'Station name has invalid format' if name !~ STATION_FORMAT
   end
 end

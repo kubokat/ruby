@@ -1,8 +1,9 @@
+# Train class
 class Train
   include Manufacturer
   include InstanceCounter
 
-  TRAIN_FORMAT = /^[a-z0-9]{3}(\-[a-z0-9]{2})?$/
+  TRAIN_FORMAT = /^[a-z0-9]{3}(\-[a-z0-9]{2})?$/.freeze
 
   attr_accessor :wagons, :speed
   attr_reader :number, :route
@@ -39,25 +40,25 @@ class Train
     end
   end
 
-  def route(route)
+  def add_route(route)
     @route = route
     current_station.add_train(self)
   end
 
   def move_forward
-    if @route.stations[@station_index + 1]
-      current_station.send_train(self)
-      @station_index += 1
-      set_station
-    end
+    return unless @route.stations[@station_index + 1]
+
+    current_station.send_train(self)
+    @station_index += 1
+    set_station
   end
 
   def move_back
-    if @station_index > 0
-      current_station.send_train(self)
-      @station_index -= 1
-      set_station
-    end
+    return unless @station_index > 0
+
+    current_station.send_train(self)
+    @station_index -= 1
+    set_station
   end
 
   def valid?

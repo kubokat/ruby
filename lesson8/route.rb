@@ -1,5 +1,8 @@
+# Route class
 class Route
   include InstanceCounter
+
+  VALIDATE_MESSAGE = 'Start and end stations are the same'.freeze
 
   attr_reader :stations
 
@@ -27,6 +30,6 @@ class Route
   protected
 
   def validate!
-    raise 'Starting and ending stations are the same' if @stations.first == @stations.last
+    raise VALIDATE_MESSAGE if @stations.first == @stations.last
   end
 end
