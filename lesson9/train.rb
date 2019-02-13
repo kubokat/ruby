@@ -25,6 +25,7 @@ class Train
     @station_index = 0
     @@trains[number] = self
     register_instance
+    validate!
   end
 
   def remove_wagon
