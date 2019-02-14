@@ -14,8 +14,8 @@ class Station
   @@stations = []
 
   def initialize(name)
-    @name = name
     validate!
+    @name = name
     @@stations << name
     @trains = []
     register_instance
@@ -37,22 +37,7 @@ class Station
     @trains.delete(train)
   end
 
-  def valid?
-    validate!
-    true
-  rescue StandardError
-    false
-  end
-
   def train_list
     @trains.each { |train| yield train }
-  end
-
-  private
-
-  def validate!
-    raise "Station name can't be nil" if name.nil?
-    raise 'Name > 3 and < 255 symbols' if name.length < 3 || name.length > 255
-    raise 'Station name has invalid format' if name !~ STATION_FORMAT
   end
 end
