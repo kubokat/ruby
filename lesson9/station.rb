@@ -2,10 +2,11 @@
 class Station
   include InstanceCounter
   include Validation
+  extend Accessors
 
   STATION_FORMAT = /[a-z]/i.freeze
 
-  attr_reader :name, :trains
+  attr_accessor_with_history :name, :trains
 
   validate :name, :presence
   validate :name, :format, STATION_FORMAT

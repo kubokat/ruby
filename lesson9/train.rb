@@ -3,14 +3,17 @@ class Train
   include Manufacturer
   include InstanceCounter
   include Validation
+  extend Accessors
 
   TRAIN_FORMAT = /^[a-z0-9]{3}(\-[a-z0-9]{2})?$/.freeze
 
-  attr_accessor :wagons, :speed
   attr_reader :number, :route
+
+  attr_accessor_with_history :speed, :wagons
 
   validate :number, :presence
   validate :number, :format, TRAIN_FORMAT
+  validate :speed, :type, Fixnum
 
   @@trains = {}
 
@@ -23,9 +26,9 @@ class Train
     @wagons = []
     @speed = 0
     @station_index = 0
+    validate!
     @@trains[number] = self
     register_instance
-    validate!
   end
 
   def remove_wagon
@@ -65,13 +68,6 @@ class Train
     set_station
   end
 
-  def valid?
-    validate!
-    true
-  rescue StandardError
-    false
-  end
-
   def wagons_list
     @wagons.each_with_index { |wagon, _index| yield wagon }
   end
@@ -97,10 +93,5 @@ class Train
 
   def prev_station
     @route.stations[@station_index - 1] if @station_index > 0
-  end
-
-  def validate!
-    raise "Train number can't be nil" if number.nil?
-    raise 'Train number has invalid format' if number !~ TRAIN_FORMAT
   end
 end

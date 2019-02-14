@@ -1,10 +1,11 @@
 # Route class
 class Route
   include InstanceCounter
+  extend Accessors
 
   VALIDATE_MESSAGE = 'Start and end stations are the same'.freeze
 
-  attr_reader :stations
+  attr_accessor_with_history :stations
 
   def initialize(first, last)
     @stations = [first, last]

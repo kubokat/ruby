@@ -25,15 +25,19 @@ class Menu
 
   def run
     loop do
-      @@menu_items.each_with_index do |item, index|
-        puts "#{index + 1}. #{item}"
+      begin
+        @@menu_items.each_with_index do |item, index|
+          puts "#{index + 1}. #{item}"
+        end
+
+        @choise = gets.to_i
+
+        break if choise == 14
+
+        change_choice
+      rescue RuntimeError => e
+        puts e.message
       end
-
-      @choise = gets.to_i
-
-      break if choise == 14
-
-      change_choice
     end
   end
 
