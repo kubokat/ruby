@@ -46,7 +46,7 @@ class Menu
   attr_accessor :choise
 
   def change_choice
-    send(@@methods[choise - 1]) if @@methods[choise - 1]
+    send(@@methods[choise - 1]) if choise > 0 && @@methods[choise - 1]
   end
 
   def create_station
